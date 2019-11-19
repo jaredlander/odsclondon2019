@@ -362,6 +362,7 @@ sal20 <- xgb.train(
 
 # set up cross-validation ####
 # rsample
+set.seed(18723)
 sal_cv <- vfold_cv(data=train, v=5, strata='SalaryCY')
 
 # set up model specification
@@ -405,3 +406,21 @@ sal_rec <- recipe(SalaryCY ~ Region + Title + Sector + Years + Reports +
     step_other(all_nominal(), other='Misc') %>% 
     step_dummy(all_nominal(), one_hot=TRUE)
 sal_rec
+
+sal_metrics <- metric_set(rmse, mae)
+# rmse = sqrt(mean((y - y_hat)^2))
+# mae: abs(y - y_hat)
+
+library(tictoc)
+tic()
+sal_tune <- tune_grid(
+    object=sal_rec,
+    model=spec_xg,
+    resamples=sal_cv,
+    grid=sal_grid,
+    metrics=sal_metrics,
+    control=control_grid(verbose=TRUE)
+)
+toc()
+
+sal_tune
