@@ -424,3 +424,50 @@ sal_tune <- tune_grid(
 toc()
 
 sal_tune
+sal_tune$.metrics
+sal_tune$.metrics[[1]]
+sal_tune$.metrics[[2]]
+
+sal_score <- collect_metrics(sal_tune)
+
+ggplot(sal_score, aes(x=NumTrees, y=mean, color=tree_depth)) + 
+    geom_line() + 
+    facet_wrap(~ .metric, ncol=1)
+
+show_best(sal_tune, metric='rmse', maximize=FALSE)
+show_best(sal_tune, metric='mae', maximize=FALSE)
+
+
+sal_best <- select_best(sal_tune, metric='mae', maximize=FALSE)
+sal_best
+
+sal_finished <- finalize_model(x=spec_xg, parameters=sal_best)
+sal_finished
+
+sal_mod <- fit(sal_finished, formula=SalaryCY ~ ., 
+               data=sal_rec %>% prep() %>% juice())
+sal_mod
+
+# workflow() %>% 
+#     add_recipe() %>% 
+#     add_model() %>% 
+#     fit_resamples()
+
+sal_mod$fit %>% 
+    xgb.importance(model=.) %>% 
+    .[1:5, ] %>% 
+    xgb.plot.importance()
+
+sal_mod_preds <- predict(
+    sal_mod, 
+    new_data=sal_rec %>% prep() %>% bake(new_data=test)
+)
+sal_mod_preds
+
+sal_compare <- sal_rec %>% 
+    prep() %>% 
+    bake(SalaryCY, new_data=test) %>% 
+    bind_cols(sal_mod_preds)
+sal_compare
+
+sal_metrics(data=sal_compare, truth=SalaryCY, estimate=.pred)
