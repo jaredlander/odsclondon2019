@@ -76,3 +76,61 @@ sal_ready
 
 sal3 <- lm(SalaryCY ~ ., data=sal_ready)
 coefplot(sal3, sort='magnitude')
+
+sal_test <- sal_rec %>% 
+    bake(new_data=test)
+
+
+library(glmnet)
+
+
+# lm: data.frame/tibble
+# glmnet: matrices
+
+sal_x <- sal_rec %>% 
+    juice(all_predictors(), composition='matrix')
+class(sal_x)
+sal_y <- sal_rec %>% 
+    # juice(all_outcomes(), composition='matrix')
+    juice(SalaryCY, composition='matrix')
+head(sal_x)
+head(sal_y)
+
+sal4 <- glmnet(x=sal_x, y=sal_y, family='gaussian', alpha=1, standardize=FALSE, nlambda=100)
+coef(sal4)
+sal4 %>% coef() %>% as.matrix() %>% View()
+sal4$lambda
+dim(coef(sal4))
+plot(sal4, xvar='lambda')
+plot(sal4, xvar='lambda', label=TRUE)
+
+coefpath(sal4)
+coefplot(sal4, sort='magnitude', lambda=exp(-6))
+coefplot(sal4, sort='magnitude', lambda=exp(-10))
+coefplot(sal4, sort='magnitude', lambda=exp(-2))
+
+sal5 <- cv.glmnet(x=sal_x, y=sal_y, family='gaussian', 
+               alpha=1, standardize=FALSE, nlambda=100,
+               nfolds=10)
+coefpath(sal5)
+plot(sal5)
+
+coefplot(sal5, sort='magnitude', lambda='lambda.min')
+coefplot(sal5, sort='magnitude', lambda='lambda.1se')
+
+sal6 <- cv.glmnet(x=sal_x, y=sal_y, 
+                  family='gaussian', alpha=0, 
+                  standardize=FALSE, nlambda=100,
+                  nfolds=10)
+coefpath(sal6)
+
+sal7 <- cv.glmnet(x=sal_x, y=sal_y, 
+                  family='gaussian', alpha=0.5, 
+                  standardize=FALSE, nlambda=100,
+                  nfolds=10)
+coefpath(sal7)
+
+test_x <- sal_rec %>% 
+    bake(all_predictors(), new_data=test, composition='matrix')
+
+sal_preds_7 <- predict(sal7, newx=test_x, s='lambda.1se')
