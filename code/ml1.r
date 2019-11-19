@@ -23,6 +23,8 @@ ggplot(train, aes(x=SalaryCY, fill=Title)) +
 
 names(train)
 
+# linear models ####
+
 # y ~ x
 
 sal1 <- lm(SalaryCY ~ Region + Title + Sector + 
@@ -174,7 +176,33 @@ library(yardstick)
 
 sal_preds_8 %>% 
     bind_cols(sal_test) %>%
-    mutate(SalaryCY=10^SalaryCY, .pred=10^.pred) %>% 
+    mutate(SalaryCY=10^SalaryCY, .pred=10^.pred) %>%
     rmse(truth=SalaryCY, estimate=.pred)
 
 
+# decision trees ####
+
+# http://www.r2d3.us/visual-intro-to-machine-learning-part-1/
+
+library(xgboost)
+
+test_y <- sal_rec %>% 
+    bake(SalaryCY, new_data=test, composition='matrix')
+head(test_y)
+
+train_xg <- xgb.DMatrix(data=sal_x, label=sal_y)
+# DON'T USE TEST DATA AS VALIDATION DATA
+# WE'RE JUST DOING IT OUT OF LAZINESS
+test_xg <- xgb.DMatrix(data=test_x, label=test_y)
+
+sal9 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=1,
+    watchlist=list(train=train_xg)
+)
+sal9
+sal9 %>% 
+    xgb.plot.multi.trees()
