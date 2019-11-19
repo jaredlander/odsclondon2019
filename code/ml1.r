@@ -134,3 +134,47 @@ test_x <- sal_rec %>%
     bake(all_predictors(), new_data=test, composition='matrix')
 
 sal_preds_7 <- predict(sal7, newx=test_x, s='lambda.1se')
+
+
+library(parsnip)
+
+spec_lm <- linear_reg() %>% 
+    set_engine('lm')
+spec_lm
+
+sal8 <- spec_lm %>% 
+    fit(SalaryCY ~ ., data=sal_ready)
+
+spec_glmnet <- linear_reg() %>% 
+    set_engine('glmnet')
+sal9 <- spec_glmnet %>% 
+    fit(SalaryCY ~ ., data=sal_ready)
+
+linear_reg() %>% 
+    set_engine('stan') %>% 
+    fit(SalaryCY ~ ., data=sal_ready)
+linear_reg() %>% 
+    set_engine('keras') %>% 
+    fit(SalaryCY ~ ., data=sal_ready)
+# set_engine('spark')
+
+parsnip::logistic_reg
+parsnip::boost_tree
+parsnip::rand_forest
+
+sal8
+
+sal_test <- sal_rec %>% 
+    bake(everything(), new_data=test)
+
+sal_preds_8 <- predict(sal8, new_data=sal_test)
+sal_preds_8
+
+library(yardstick)
+
+sal_preds_8 %>% 
+    bind_cols(sal_test) %>%
+    mutate(SalaryCY=10^SalaryCY, .pred=10^.pred) %>% 
+    rmse(truth=SalaryCY, estimate=.pred)
+
+
