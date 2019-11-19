@@ -1,3 +1,9 @@
+# Comapny Information: https://www.landeranalytics.com/
+# Slides and Musings: https://www.jaredlander.com/
+# R Conference: https://www.rstats.nyc/
+# Meetup: https://nyhackr.org/
+# Book: https://amzn.to/2O05A5z
+
 library(dplyr)
 library(purrr)
 library(ggplot2)
@@ -183,6 +189,8 @@ sal_preds_8 %>%
 # decision trees ####
 
 # http://www.r2d3.us/visual-intro-to-machine-learning-part-1/
+# scattering of slides at https://www.jaredlander.com/talks/
+
 
 library(xgboost)
 
@@ -206,3 +214,143 @@ sal9 <- xgb.train(
 sal9
 sal9 %>% 
     xgb.plot.multi.trees()
+
+sal10 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=100,
+    watchlist=list(train=train_xg)
+)
+
+sal11 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=500,
+    watchlist=list(train=train_xg)
+)
+
+sal12 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=2000,
+    watchlist=list(train=train_xg),
+    print_every_n=20
+)
+
+sal13 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=1000,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=20
+)
+
+library(dygraphs)
+dygraph(sal13$evaluation_log)
+
+
+sal14 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=1000,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=10,
+    early_stopping_rounds=50
+)
+
+sal14 %>% 
+    xgb.importance(model=.) %>% 
+    .[1:10, ] %>% 
+    xgb.plot.importance()
+
+
+sal15 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=500,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=5,
+    early_stopping_rounds=50,
+    max_depth=10
+)
+
+sal16 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=500,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=5,
+    early_stopping_rounds=50,
+    max_depth=2
+)
+
+sal17 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=500,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=5,
+    early_stopping_rounds=50,
+    max_depth=2,
+    subsample=0.5
+)
+
+sal18 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=500,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=5,
+    early_stopping_rounds=50,
+    max_depth=2,
+    subsample=0.5,
+    colsample_bytree=0.5
+)
+
+sal19 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=1,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=5,
+    early_stopping_rounds=50,
+    max_depth=2,
+    subsample=0.5,
+    colsample_bytree=0.5,
+    num_parallel_tree=500
+)
+
+sal20 <- xgb.train(
+    data=train_xg,
+    objective='reg:squarederror',
+    booster='gbtree',
+    eval_metric='rmse',
+    nrounds=20,
+    watchlist=list(train=train_xg, validate=test_xg),
+    print_every_n=1,
+    early_stopping_rounds=50,
+    max_depth=2,
+    subsample=0.5,
+    colsample_bytree=0.5,
+    num_parallel_tree=50
+)
