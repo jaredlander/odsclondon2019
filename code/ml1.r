@@ -354,3 +354,54 @@ sal20 <- xgb.train(
     colsample_bytree=0.5,
     num_parallel_tree=50
 )
+
+# for each unique combination of hyperparameters
+# run cross-validation
+# get cross-validated error
+# the combination with the best error wins
+
+# set up cross-validation ####
+# rsample
+sal_cv <- vfold_cv(data=train, v=5, strata='SalaryCY')
+
+# set up model specification
+# parsnip
+# devtools::install_github('tidymodels/tune')
+library(dials)
+library(tune)
+spec_xg <- boost_tree(
+    mode='regression', 
+    learn_rate=0.3, 
+    trees=tune(id='NumTrees'),
+    tree_depth=tune()
+) %>% 
+    set_engine('xgboost')
+spec_xg
+
+parameters(spec_xg)
+
+trees()
+tree_depth()
+
+sal_xg_params <-
+    spec_xg %>% 
+    parameters() %>% 
+    update(
+        NumTrees=trees(range=c(20, 500)),
+        tree_depth=tree_depth(range=c(2, 8))
+    )
+sal_xg_params$object
+
+# make grid for tuning over ####
+
+sal_grid <- grid_random(sal_xg_params, size=6)
+sal_grid
+
+sal_rec <- recipe(SalaryCY ~ Region + Title + Sector + Years + Reports + 
+                      Level + Career + Floor,
+                  data=train) %>% 
+    step_nzv(all_predictors()) %>% 
+    step_BoxCox(all_numeric(), -SalaryCY) %>% 
+    step_other(all_nominal(), other='Misc') %>% 
+    step_dummy(all_nominal(), one_hot=TRUE)
+sal_rec
