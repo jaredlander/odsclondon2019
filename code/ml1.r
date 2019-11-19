@@ -428,6 +428,10 @@ sal_tune$.metrics
 sal_tune$.metrics[[1]]
 sal_tune$.metrics[[2]]
 
+readr::write_rds(sal_tune, path='data/sal_tune.rds')
+piggyback::pb_upload('artifacts/sal_tune.rds', 'jaredlander/odsclondon2019')
+
+
 sal_score <- collect_metrics(sal_tune)
 
 ggplot(sal_score, aes(x=NumTrees, y=mean, color=tree_depth)) + 
@@ -471,3 +475,38 @@ sal_compare <- sal_rec %>%
 sal_compare
 
 sal_metrics(data=sal_compare, truth=SalaryCY, estimate=.pred)
+
+library(doParallel)
+detectCores()
+detectCores(logical=FALSE)
+
+cl <- makeCluster(detectCores(logical=FALSE))
+registerDoParallel(cl)
+
+tic()
+sal_tune_par <- tune_grid(
+    object=sal_rec,
+    model=spec_xg,
+    resamples=sal_cv,
+    grid=sal_grid,
+    metrics=sal_metrics,
+    control=control_grid(verbose=TRUE)
+)
+toc()
+
+stopCluster(cl)
+
+readr::write_rds(sal_mod, 'artifacts/sal_mods.rds')
+sal_prepped <- sal_rec %>% 
+    prep(retain=FALSE)
+readr::write_rds(sal_prepped, 'artifacts/sal_prepped.rds')
+
+simple_mod <- lm(tip ~ total_bill, data=reshape2::tips)
+
+readr::write_rds(simple_mod, path='artifacts/simple_mod.rds')
+
+test %>% 
+    dplyr::slice(27) %>% 
+    jsonlite::write_json(path='data/one_comp.json')
+
+# rocker: https://hub.docker.com/r/rocker/ml-gpu

@@ -1,4 +1,19 @@
 simple_mod <- readr::read_rds('artifacts/simple_mod.rds')
+sal_mod <- readr::read_rds('artifacts/sal_mods.rds')
+sal_prepped <- readr::read_rds('artifacts/sal_prepped.rds')
+
+#' Predict a salary
+#' @param info
+#' @get /sal
+function(info)
+{
+    one_row <- jsonlite::fromJSON(info) %>% as.data.frame()
+    
+    one_prepped <- sal_prepped %>% 
+        bake(all_predictors(), new_data=one_row)
+    predict(sal_mod, new_data=one_prepped) %>% 
+        pull(.pred)
+}
 
 #' Return a predicted score
 #' @param bill
