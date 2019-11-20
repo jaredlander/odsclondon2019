@@ -1,0 +1,72 @@
+---
+title: Dashboarding
+output:
+    flexdashboard::flex_dashboard:
+        orientation: columns
+        social: ['twitter', 'linkedin']
+        source_code: embed
+---
+
+```{r setup}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r load-packages}
+library(leaflet)
+library(magrittr)
+library(DT)
+library(crosstalk)
+```
+
+```{r read-data}
+pizza <- jsonlite::fromJSON(here::here('data', 'FavoriteSpots.json')) %>% 
+    tidyr::unnest()
+
+pizza <- SharedData$new(pizza, key= ~Name)
+```
+
+# First Page
+
+##
+
+### Table
+
+```{r the-table}
+datatable(pizza, rownames=FALSE, elementId='PizzaTable')
+```
+
+##
+
+### Map
+
+```{r the-map}
+leaflet(data=pizza) %>% 
+    addTiles() %>% 
+    addMarkers(
+        lng = ~ longitude,
+        lat = ~ latitude,
+        popup = ~ Name
+    )
+```
+
+### Other
+
+Filler goes here
+
+# Second Page
+
+## {.tabset}
+
+### Number 1
+
+One is the lonist number
+
+### Number 2
+
+Two is the loniest number sincde the number one
+
+### Number 3
+
+<!-- https://maloriejhughes.github.io/DCR2019_TwitterDashboard/#mash-up-metric-details -->
+
+Three is having a good time

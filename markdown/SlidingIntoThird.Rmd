@@ -19,15 +19,33 @@ library(leaflet)
 
 # Section Starter
 
+<div class="notes">
+- Get the crowd started
+</div>
+
 ## Slide with Content
 
 This slide has excellent content
+
+<div class='notes'>
+- Show off all the cool stuff in here
+- great, awesome, winning
+</div>
 
 ## Even Better Content
 
 This keeps getting more and more awesomer
 
+<div class='notes'>
+- really go strong here
+- this is the best
+</div>
+
 # A New Idea
+
+<div class='notes'>
+- now we pivot
+</div>
 
 ## Brilliance
 
@@ -35,7 +53,16 @@ This is a tribute to the greatest slideshow ever
 
 It's not the greatest, but atribute to the greatest
 
+<div class='notes'>
+- Tenacious D really had something going
+_ Jack is the man
+</div>
+
 # R Code Oh Yeah!!!!
+
+<div class='notes'>
+- now we have fun
+</div>
 
 ## Pizza
 
@@ -82,3 +109,11 @@ leaflet(data=pizza, elementId='SecondMap') %>% addTiles() %>%
 DT::datatable(pizza, rownames=FALSE, elementId='PizzaTable')
 ```
 </div>
+
+## Images
+
+```{r insert-image,fig.align='center'}
+knitr::include_graphics(here::here('images', 'rstudio-create-project-git.png'))
+```
+
+## {data-background=../images/rstudio-create-project-git.png}
