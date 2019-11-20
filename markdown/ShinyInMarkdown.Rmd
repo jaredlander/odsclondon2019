@@ -1,0 +1,80 @@
+---
+title: Sparkling Objects
+author: Robin
+date: Summer in Canada
+output: html_document
+runtime: shiny
+---
+# Packages
+
+```{r load-packages}
+library(ggplot2)
+library(shiny)
+```
+
+# Select Input
+
+```{r select-input}
+selectInput(
+    inputId='CountrySelection',
+    label='Please choose a country',
+    choices=list('USA', 'Belgium', 'Netherlands', 'Austria', 
+                 'UK', 'Spain', 'Lithuania'
+    )
+)
+```
+
+```{r print-country}
+renderText(
+    input$CountrySelection
+)
+```
+
+# Other Inputs
+
+```{r more-inputs}
+sliderInput(
+    inputId='SlideSample',
+    label='This is a slider',
+    min=0, max=10, value=5
+)
+
+radioButtons(
+    inputId='Radiohead',
+    label='Choose one',
+    choices=list('Sad', 'Mellow', 'Depressing')
+)
+```
+
+# Text Inputs
+
+```{r stuff-to-write-in}
+textInput(
+    inputId='TextSample',
+    label='Write something',
+    placeholder='I am a ghost'
+)
+
+textAreaInput(
+    inputId='BigText',
+    label='Write a lot of stuff'
+)
+
+passwordInput(
+    inputId='PasswordSample',
+    label='Enter the secret'
+)
+
+renderText(
+    input$PasswordSample
+)
+```
+
+# Show Data
+
+```{r render-data}
+renderTable(head(mtcars))
+
+DT::renderDataTable(mtcars)
+```
+
