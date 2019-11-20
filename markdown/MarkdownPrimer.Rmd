@@ -1,9 +1,45 @@
 ---
-title: Cool School
-author: Shakespeare
-date: November 20, 2019
-output: html_document
+title: "Cool School"
+author: "Shakespeare"
+date: "November 20, 2019"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+    theme: "cosmo"
+    # css: [file1.css, file2.css]
+  pdf_document:
+    toc: yes
+params:
+    client: "default"
 ---
+
+```{r set-options}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{css}
+strong {
+    color: red;
+}
+```
+
+Markdown was made by Yihui Xie
+
+
+# Show Parameters
+
+```{r show-client,cache=FALSE}
+sprintf("This report generated for %s.", params$client)
+```
+
+```{r render-with-parameters,eval=FALSE}
+rmarkdown::render(input='MarkdownPrimer.Rmd', output_file='MarkdownSpecial.html', params=list(client='NYR'))
+```
+
 
 # Sections
 
@@ -11,11 +47,11 @@ Create a new section with a single hashtag. All words in a single line of code i
 
 Leave a blank line to start a new paragraph.
 
-# Another Section
+# Another Section {-}
 
 Start a new section with another hashtag. No need to close the previous section.
 
-# Subsections
+# Subsections {.tabset}
 
 We start subsections, which are nested within sections, with two hashtags.
 
@@ -82,4 +118,65 @@ $$
 $$
 
 
+$$
+\begin{bmatrix}
+1 & x_{11} & x_{12} & \dots & x_{1p} \\
+1 & x_{21} & x_{22} & \dots & x_{2p}
+\end{bmatrix}
+$$
 
+$$
+y = f(x) = \alpha + \beta_1x_1 + \epsilon + \gamma + \Gamma + \pi + \Pi
+$$
+
+# R Time!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+```{r simple-maths}
+1 + 1
+2*3
+```
+
+Let's play with variables
+
+```{r variables,comment=NA}
+x <- 3
+x
+```
+
+Can we use `x` in subequent chunks?
+
+```{r use-variables,cache=FALSE}
+# this is a comment in a chunk
+# because chunks are regular R code
+x + 1
+```
+
+<!-- And this is a comment in markdown -->
+
+What if we want to show the results of code, but not the code?
+
+```{r hide-this,echo=FALSE,dependson=c('vairables')}
+3*x + 8
+```
+
+# Plots Yes!
+
+```{r diamond-scatter,fig.cap="Scatterplot of price vs size and cut",fig.scap="Scatterplot of diamonds",cache=TRUE}
+library(ggplot2)
+ggplot(diamonds, aes(x=carat, y=price, color=cut)) + 
+    geom_point()
+```
+
+```{r working-dir}
+getwd()
+list.files()
+here::here('data', 'TomatoFirst.csv')
+```
+
+
+```{r read-data,cache=TRUE, cache.extra=file.info(here::here('data', 'TomatoFirst.csv'))$mtime}
+tomato <- readr::read_csv(here::here('data', 'TomatoFirst.csv'))
+```
+
+
+What an awesome plot
