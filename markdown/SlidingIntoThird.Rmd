@@ -1,0 +1,84 @@
+---
+title: Watch This Now
+author: The West London Cartel
+output:
+    ioslides_presentation:
+        widescreen: true
+---
+
+```{r setup,echo=FALSE}
+knitr::opts_chunk$set(cache=TRUE, warning=FALSE)
+```
+
+
+```{r load-packages,echo=FALSE,message=FALSE,warning=FALSE}
+library(magrittr)
+library(leaflet)
+```
+
+
+# Section Starter
+
+## Slide with Content
+
+This slide has excellent content
+
+## Even Better Content
+
+This keeps getting more and more awesomer
+
+# A New Idea
+
+## Brilliance
+
+This is a tribute to the greatest slideshow ever
+
+It's not the greatest, but atribute to the greatest
+
+# R Code Oh Yeah!!!!
+
+## Pizza
+
+```{r load-data}
+pizza <- jsonlite::fromJSON(here::here('data', 'FavoriteSpots.json')) %>% 
+    ### <b>
+    tidyr::unnest()
+    ### </b>
+```
+
+## Map It
+
+```{r the-map,dependson=c('load-data')}
+leaflet(data=pizza, elementId='FirstMap') %>% addTiles() %>% 
+    addMarkers(lng= ~ longitude, lat = ~ latitude, popup= ~ Name
+    )
+```
+
+## Map and Table
+
+```{css,echo=FALSE}
+/* Split-column layout */
+.left-50 {
+  width: 49%;
+  height: 92%;
+  float: left;
+}
+.right-50 {
+  width: 49%;
+  height: 92%;
+  float: right;
+}
+```
+
+<div class="left-50">
+```{r the-map-2,dependson=c('load-data'),echo=FALSE}
+leaflet(data=pizza, elementId='SecondMap') %>% addTiles() %>% 
+    addMarkers(lng= ~ longitude, lat = ~ latitude, popup= ~ Name
+    )
+```
+</div>
+<div class="right-50">
+```{r the-table,dependson=c('load-data'),echo=FALSE}
+DT::datatable(pizza, rownames=FALSE, elementId='PizzaTable')
+```
+</div>
