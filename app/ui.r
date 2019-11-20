@@ -1,4 +1,5 @@
 library(shiny)
+library(shinythemes)
 
 countryPanel <- tabPanel(
     title='Country Info',
@@ -47,13 +48,15 @@ pizzaStuff <- tabPanel(
         column(
             width=6,
             DT::dataTableOutput(
-                outputId='PizzaTable'
+                outputId='PizzaTable',
+                width='95%'
             )
         ),
         column(
             width=6,
             leaflet::leafletOutput(
-                outputId='PizzaMap'
+                outputId='PizzaMap', 
+                width='95%'
             )
         )
     )
@@ -62,6 +65,8 @@ pizzaStuff <- tabPanel(
 navbarPage(
     title='Flight of the Navigator',
     selected='Pizza',
+    theme=shinytheme('sandstone'),
+    themeSelector(),
     tabPanel(
         title='The World',
         'Hello'
