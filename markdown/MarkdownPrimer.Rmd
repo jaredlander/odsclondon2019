@@ -1,0 +1,85 @@
+---
+title: Cool School
+author: Shakespeare
+date: November 20, 2019
+output: html_document
+---
+
+# Sections
+
+Create a new section with a single hashtag. All words in a single line of code is a single paragraph.
+
+Leave a blank line to start a new paragraph.
+
+# Another Section
+
+Start a new section with another hashtag. No need to close the previous section.
+
+# Subsections
+
+We start subsections, which are nested within sections, with two hashtags.
+
+## My First Subsection
+
+Since this was started with two hashtags, it is a subsection beneath the prior section.
+
+## Next Subsection
+
+Just like with sections, start a subsection with two hashtags. No need to close the prior subsection.
+
+# Back to Sections
+
+Start a new section with a hashtag. Once again, don't worry about closing the preior subsection or section even.
+
+# Lists {#list-info}
+
+There are two primary types of lists: unordered and ordered.
+
+## Unordered Lists
+
+- Landlord
+- Duvel
+- Chimay
+- St Sixtus
+- Westmalle
+- TEA
+
+## Ordered
+
+1. New York
+    a. Coal
+    a. Gas
+    a. Wood
+1. New Jersey
+    - Gas
+    - Wood
+1. Philadelphia
+1. Naples
+    - Wood
+1. Detroit
+1. Roma
+
+# Formatting
+
+Text inside _single underscores_ appears as emphasized text
+
+Two __underscores__ makes strong, which happens to look bold by default
+
+Three ___underscores does both___
+
+Backticks make the `text look like computer code` which is helpful
+
+# Links
+
+[My Webstie](https://www.jaredlander.com)
+
+This link goes to our [section about lists](#list-info)
+
+# Math
+
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
+$$
+
+
+
