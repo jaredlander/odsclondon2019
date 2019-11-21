@@ -4,3 +4,7 @@
 .Ruserdata
 data/*
 !data/data.md
+markdown/*.pdf
+markdown/*.html
+markdown/*_files
+markdown/*_cache
